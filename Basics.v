@@ -1310,7 +1310,7 @@ Proof.
   intros b c.
   destruct c eqn:Ec.
   - reflexivity.
-  - intros H. simpl.
+  - intros H.
     rewrite <- H. destruct b eqn:Eb.
     { reflexivity. }
     { reflexivity. }
