@@ -1445,7 +1445,7 @@ Fixpoint plus' (n : nat) (m : nat) : nat :=
 (*Fixpoint exercicio (x : nat) : nat :=
   match x with
   | O => exercicio (S O)
-  | S x' => exercicio (S(S x'))
+  | S x' => exercicio (x')
   end.*)
 
 (** [] *)
