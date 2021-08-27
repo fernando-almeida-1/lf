@@ -300,7 +300,7 @@ Proof. reflexivity. Qed.
 Fixpoint oddmembers (l:natlist) : natlist :=
   match l with
   | nil => nil
-  | h :: t => match (odd h) with
+  | h :: t => match odd h with
               | true => h :: oddmembers t
               | false => oddmembers t
               end
@@ -375,7 +375,7 @@ Definition bag := natlist.
 Fixpoint count (v : nat) (s : bag) : nat :=
   match s with
   | nil => 0
-  | h :: t => match (h=?v) with
+  | h :: t => match h =? v with
               | true => S (count v t)
               | false => count v t
               end
@@ -416,9 +416,9 @@ Example test_add2:                count 5 (add 1 [1;4;1]) = 0.
 Proof. reflexivity. Qed.
 
 Definition member (v : nat) (s : bag) : bool :=
-  match (count v s) with
+  match count v s with
   | 0 => false
-  | S _ => true
+  | S n => true
   end.
 
 Example test_member1:             member 1 [1;4;1] = true.
@@ -441,7 +441,7 @@ Proof. reflexivity. Qed.
 Fixpoint remove_one (v : nat) (s : bag) : bag :=
   match s with
   | nil => nil
-  | h :: t => match (h=?v) with
+  | h :: t => match h =? v with
               | true => t
               | false => h :: remove_one v t
               end
@@ -462,7 +462,7 @@ Proof. reflexivity. Qed.
 Fixpoint remove_all (v:nat) (s:bag) : bag :=
   match s with
   | nil => nil
-  | h :: t => match (h=?v) with
+  | h :: t => match h =? v with
               | true => remove_all v t
               | false => h :: remove_all v t
               end
@@ -483,7 +483,7 @@ Proof. reflexivity. Qed.
 Fixpoint subset (s1 : bag) (s2 : bag) : bool :=
   match s1 with
   | nil => true
-  | h :: t => match (member h s2) with
+  | h :: t => match member h s2 with
               | true => subset t (remove_one h s2)
               | false => false
               end
@@ -502,9 +502,9 @@ Proof. reflexivity. Qed.
     State that as a theorem and prove it. *)
 
 Theorem bag_theorem : forall (v : nat) (s : bag),
-  count v (add v s) = S(count v s).
+  count v (add v s) = S (count v s).
 Proof.
-  intros v s. simpl.
+  intros. simpl.
   rewrite eqb_refl. reflexivity.
 Qed.
 
@@ -857,7 +857,7 @@ Qed.
 Theorem rev_app_distr: forall l1 l2 : natlist,
   rev (l1 ++ l2) = rev l2 ++ rev l1.
 Proof.
-  intros l1 l2. induction l1.
+  intros. induction l1.
   { simpl. rewrite app_nil_r. reflexivity. }
   { simpl. rewrite IHl1. rewrite app_assoc. reflexivity. }
 Qed.
@@ -879,15 +879,14 @@ Qed.
 Theorem app_assoc4 : forall l1 l2 l3 l4 : natlist,
   l1 ++ (l2 ++ (l3 ++ l4)) = ((l1 ++ l2) ++ l3) ++ l4.
 Proof.
-  intros l1 l2 l3 l4. rewrite app_assoc. rewrite app_assoc. reflexivity. 
-Qed.
+  intros. rewrite app_assoc. rewrite app_assoc. reflexivity. Qed.
 
 (** An exercise about your implementation of [nonzeros]: *)
 
 Lemma nonzeros_app : forall l1 l2 : natlist,
   nonzeros (l1 ++ l2) = (nonzeros l1) ++ (nonzeros l2).
 Proof.
-  intros l1 l2. induction l1.
+  intros. induction l1.
   { reflexivity. }
   { destruct n.
     { simpl. rewrite IHl1. reflexivity. }
@@ -909,7 +908,7 @@ Fixpoint eqblist (l1 l2 : natlist) : bool :=
            end
   | h :: t => match l2 with
               | nil => false
-              | h2 :: t2 => match (h=?h2) with
+              | h2 :: t2 => match h =? h2 with
                             | true => eqblist t t2
                             | false => false
                             end
@@ -943,7 +942,7 @@ Qed.
 (** **** Exercise: 1 star, standard (count_member_nonzero) *)
 Theorem count_member_nonzero : forall (s : bag),
   1 <=? (count 1 (1 :: s)) = true.
-Proof. reflexivity. Qed.
+Proof. intros s. reflexivity. Qed.
 (** [] *)
 
 (** The following lemma about [leb] might help you in the next
@@ -987,7 +986,7 @@ Qed.
   Proof.
     intros v s1 s2. induction s1.
     { reflexivity. }
-    { simpl. rewrite IHs1. destruct (n=?v).
+    { simpl. rewrite IHs1. destruct (n =? v).
       { reflexivity. }
       { reflexivity. } }
   Qed.
@@ -1002,8 +1001,8 @@ Qed.
 Theorem rev_injective : forall (l1 l2 : natlist),
   rev l1 = rev l2 -> l1 = l2.
 Proof.
-  intros l1 l2 H1. rewrite <- rev_involutive.
-  rewrite <- H1. rewrite rev_involutive.
+  intros. rewrite <- rev_involutive.
+  rewrite <- H. rewrite rev_involutive.
   reflexivity.
 Qed.
 (** [] *)
@@ -1100,7 +1099,7 @@ Proof. reflexivity. Qed.
 Theorem option_elim_hd : forall (l:natlist) (default:nat),
   hd default l = option_elim default (hd_error l).
 Proof.
-  intros l n. destruct l.
+  intros. destruct l.
   { reflexivity. }
   { reflexivity. }
 Qed.
@@ -1206,7 +1205,7 @@ Inductive baz : Type :=
     in a comment.) *)
 
 (* Zero, pois, por nâo possuir um caso base, fica impossivel
- construir elementos finitos desse tipo. *)
+ construir elementos 'finitos' desse tipo. *)
 
 (* Do not modify the following line: *)
 Definition manual_grade_for_baz_num_elts : option (nat*string) := None.
